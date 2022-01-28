@@ -15,11 +15,9 @@ namespace Interpreter
             {
                 Console.Write("j++>");
                 lexer = new Lexer(Console.ReadLine());
-                lexer.Lex();
-                foreach(Token tok in lexer.tokens)
-                {
-                    Console.WriteLine(tok);
-                }
+                Parser parser = new Parser(lexer.getTokens());
+                Interpreter interpreter = new Interpreter();
+                interpreter.interpret(parser.ans);
             }
         }
     }

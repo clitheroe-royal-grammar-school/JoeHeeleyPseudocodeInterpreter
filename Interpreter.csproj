@@ -43,6 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Expr.cs" />
+    <Compile Include="Interpreter.cs" />
     <Compile Include="Lexer.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Program.cs" />
@@ -51,6 +53,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="astscript.py" />
+    <Content Include="grammar.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

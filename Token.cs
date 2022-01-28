@@ -10,21 +10,37 @@ namespace Interpreter
     {
         EOF,
         INTEGER,
-        BINOP,
-        LPAREN,
-        RPAREN,
+        BOOL,
+        LBRACK,
+        RBRACK,
         IDENTIFIER,
         STRING,
         ASSIGN,
+        NONE,
+        NOT,
+        NOT_EQUAL,
+        EQUAL,
+        G_THAN,
+        G_EQUAL,
+        L_THAN,
+        L_EQUAL,
+        PLUS,
+        MINUS,
+        U_MINUS,
+        DIVIDE,
+        MULTIPLY,
     }
     class Token
     {
         public string value;
         public TokenType type;
-        public Token(string val,TokenType token_type)
+        public object obj;
+        public Token(string value,TokenType type,object obj)
         {
-            value = val;
-            type = token_type;
+            this.value = value;
+            this.type = type;
+            this.obj = obj;
+
         }
         public override string ToString()
         {
