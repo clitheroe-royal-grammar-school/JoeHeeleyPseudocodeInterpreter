@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Interpreter
+namespace JoePlusPlus
 {
     class Lexer
     {
         private string text;
         private int pos;
         private List<Token> tokens;
-        public List<Token> getTokens()
+        public List<Token> GetTokens()
         {
             return tokens;
         }

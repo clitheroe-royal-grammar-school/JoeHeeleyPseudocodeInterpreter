@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Interpreter
+namespace JoePlusPlus
 {
     class Interpreter : Visitor<object>
     {
-        public void interpret(Expr expression)
+        public void Interpret(Expr expression)
         {
             try
             {
-                object value = evaluate(expression);
+                object value = Evaluate(expression);
                 Console.WriteLine(value.ToString());
             }
             catch(Exception e)
@@ -20,11 +20,11 @@ namespace Interpreter
                 Console.WriteLine(e);
             }
         }
-        public object visitExprBinary(ExprBinary exprbinary)
+        public object VisitExprBinary(ExprBinary expr_binary)
         {
-            object left = evaluate(exprbinary.left);
-            object right = evaluate(exprbinary.right);
-            switch (exprbinary.op.type)
+            object left = Evaluate(expr_binary.left);
+            object right = Evaluate(expr_binary.right);
+            switch (expr_binary.op.GetTokenType())
             {
                 case TokenType.MINUS:
                     return (int)left - (int)right;
@@ -58,32 +58,32 @@ namespace Interpreter
             return null;
         }
 
-        public object visitExprGrouping(ExprGrouping exprgrouping)
+        public object VisitExprGrouping(ExprGrouping expr_grouping)
         {
-            return evaluate(exprgrouping.expression);
+            return Evaluate(expr_grouping.expression);
         }
 
-        public object visitExprLiteral(ExprLiteral exprliteral)
+        public object VisitExprLiteral(ExprLiteral expr_literal)
         {
-            return exprliteral.value;
+            return expr_literal.value;
         }
 
-        public object visitExprUnary(ExprUnary exprunary)
+        public object VisitExprUnary(ExprUnary expr_unary)
         {
-            object right = evaluate(exprunary.right);
-            if (exprunary.op.type == TokenType.MINUS)
+            object right = Evaluate(expr_unary.right);
+            if (expr_unary.op.GetTokenType() == TokenType.MINUS)
             {
                 return -(int)right;
             }
-            if (exprunary.op.type == TokenType.NOT)
+            if (expr_unary.op.GetTokenType() == TokenType.NOT)
             {
                 return !(bool)right;
             }
             return null;
         }
-        public object evaluate(Expr expr)
+        public object Evaluate(Expr expr)
         {
-            return expr.accept(this);
+            return expr.Accept(this);
         }
     }
 }

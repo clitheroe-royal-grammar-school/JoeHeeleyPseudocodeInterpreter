@@ -4,101 +4,101 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Interpreter
+namespace JoePlusPlus
 {
     class Parser
     {
         public List<Token> tokens;
         private int curr;
-        public Expr ans;
+        public Expr result;
         public Parser(List<Token> toks)
         {
             tokens = toks;
             curr = 0;
-            ans = expression();
+            result = Expression();
         }
-        private Expr expression()
+        private Expr Expression()
         {
-            return equality();
+            return Equality();
         }
-        private Expr equality()
+        private Expr Equality()
         {
-            Expr expr = comparison();
+            Expr expr = Comparison();
             List<TokenType> types = new List<TokenType>{ TokenType.NOT_EQUAL, TokenType.EQUAL };
-            while (match(types))
+            while (Match(types))
             {
                 Token op = tokens[curr - 1];
-                Expr right = comparison();
+                Expr right = Comparison();
                 expr = new ExprBinary(expr, op, right);
             }
             return expr;
         }
-        private Expr comparison()
+        private Expr Comparison()
         {
-            Expr expr = term();
+            Expr expr = Term();
             List<TokenType> types = new List<TokenType> { TokenType.G_THAN, TokenType.G_EQUAL, TokenType.L_THAN, TokenType.L_EQUAL };
-            while (match(types))
+            while (Match(types))
             {
                 Token op = tokens[curr - 1];
-                Expr right = term();
+                Expr right = Term();
                 expr = new ExprBinary(expr, op, right);
             }
             return expr;
         }
-        private Expr term()
+        private Expr Term()
         {
-            Expr expr = factor();
+            Expr expr = Factor();
             List<TokenType> types = new List<TokenType> { TokenType.MINUS, TokenType.PLUS };
-            while (match(types))
+            while (Match(types))
             {
                 Token op = tokens[curr - 1];
-                Expr right = factor();
+                Expr right = Factor();
                 expr = new ExprBinary(expr, op, right);
             }
             return expr;
         }
-        private Expr factor()
+        private Expr Factor()
         {
-            Expr expr = unary();
+            Expr expr = Unary();
             List<TokenType> types = new List<TokenType> { TokenType.DIVIDE, TokenType.MULTIPLY };
-            while (match(types))
+            while (Match(types))
             {
                 Token op = tokens[curr - 1];
-                Expr right = unary();
+                Expr right = Unary();
                 expr = new ExprBinary(expr, op, right);
             }
             return expr;
         }
-        private Expr unary()
+        private Expr Unary()
         {
             List<TokenType> types = new List<TokenType> { TokenType.NOT, TokenType.MINUS };
-            if (match(types))
+            if (Match(types))
             {
                 Token op = tokens[curr - 1];
-                Expr right = unary();
+                Expr right = Unary();
                 return new ExprUnary(op, right);
             }
-            return primary();
+            return Primary();
         }
-        private Expr primary()
+        private Expr Primary()
         {
-            if (match(TokenType.INTEGER)) return new ExprLiteral(tokens[curr - 1].obj);
-            if (match(TokenType.STRING)) return new ExprLiteral(tokens[curr - 1].obj);
-            if (match(TokenType.BOOL)) return new ExprLiteral(tokens[curr - 1].obj);
-            if (match(TokenType.NONE)) return new ExprLiteral(tokens[curr - 1].obj);
-            if (match(TokenType.LBRACK))
+            if (Match(TokenType.INTEGER)) return new ExprLiteral(tokens[curr - 1].GetObj());
+            if (Match(TokenType.STRING)) return new ExprLiteral(tokens[curr - 1].GetObj());
+            if (Match(TokenType.BOOL)) return new ExprLiteral(tokens[curr - 1].GetObj());
+            if (Match(TokenType.NONE)) return new ExprLiteral(tokens[curr - 1].GetObj());
+            if (Match(TokenType.LBRACK))
             {
-                ExprGrouping expr = new ExprGrouping(expression());
-                match(TokenType.RBRACK);
+                ExprGrouping expr = new ExprGrouping(Expression());
+                Match(TokenType.RBRACK);
                 return expr;
             }
             return null;
         }
-        private bool match(List<TokenType> types)
+        private bool Match(List<TokenType> types)
         {
             foreach(TokenType type in types)
             {
-                if(curr < tokens.Count && tokens[curr].type == type)
+                if(curr < tokens.Count && tokens[curr].GetTokenType() == type)
                 {
                     curr++;
                     return true;
@@ -107,9 +107,9 @@ namespace Interpreter
 
             return false;
         }
-        private bool match(TokenType type)
+        private bool Match(TokenType type)
         {
-            if (curr < tokens.Count && tokens[curr].type == type)
+            if (curr < tokens.Count && tokens[curr].GetTokenType() == type)
             {
                 curr++;
                 return true;

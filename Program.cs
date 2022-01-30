@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Interpreter
+namespace JoePlusPlus
 {
     class Program
     {
@@ -15,9 +15,9 @@ namespace Interpreter
             {
                 Console.Write("j++>");
                 lexer = new Lexer(Console.ReadLine());
-                Parser parser = new Parser(lexer.getTokens());
+                Parser parser = new Parser(lexer.GetTokens());
                 Interpreter interpreter = new Interpreter();
-                interpreter.interpret(parser.ans);
+                interpreter.Interpret(parser.result);
             }
         }
     }

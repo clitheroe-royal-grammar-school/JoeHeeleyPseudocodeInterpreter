@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-namespace Interpreter{
+namespace JoePlusPlus{
 	abstract class Expr{
-		public abstract T accept<T>(Visitor<T> vis);
+		public abstract T Accept<T>(Visitor<T> vis);
 	}
 	interface Visitor<T>{
-		T visitExprBinary(ExprBinary exprbinary);
-		T visitExprGrouping(ExprGrouping exprgrouping);
-		T visitExprLiteral(ExprLiteral exprliteral);
-		T visitExprUnary(ExprUnary exprunary);
+		T VisitExprBinary(ExprBinary expr_binary);
+		T VisitExprGrouping(ExprGrouping expr_grouping);
+		T VisitExprLiteral(ExprLiteral expr_literal);
+		T VisitExprUnary(ExprUnary expr_unary);
 	}
 class ExprBinary:Expr{
 	public Expr left;
@@ -22,8 +22,8 @@ class ExprBinary:Expr{
 		this.op=op;
 		this.right=right;
 		}
-	public override T accept<T>(Visitor<T> vis){
-		return vis.visitExprBinary(this);
+	public override T Accept<T>(Visitor<T> vis){
+		return vis.VisitExprBinary(this);
 	}
 	}
 class ExprGrouping:Expr{
@@ -31,8 +31,8 @@ class ExprGrouping:Expr{
 	public ExprGrouping(Expr expression){
 		this.expression=expression;
 		}
-	public override T accept<T>(Visitor<T> vis){
-		return vis.visitExprGrouping(this);
+	public override T Accept<T>(Visitor<T> vis){
+		return vis.VisitExprGrouping(this);
 	}
 	}
 class ExprLiteral:Expr{
@@ -40,8 +40,8 @@ class ExprLiteral:Expr{
 	public ExprLiteral(object value){
 		this.value=value;
 		}
-	public override T accept<T>(Visitor<T> vis){
-		return vis.visitExprLiteral(this);
+	public override T Accept<T>(Visitor<T> vis){
+		return vis.VisitExprLiteral(this);
 	}
 	}
 class ExprUnary:Expr{
@@ -51,8 +51,8 @@ class ExprUnary:Expr{
 		this.op=op;
 		this.right=right;
 		}
-	public override T accept<T>(Visitor<T> vis){
-		return vis.visitExprUnary(this);
+	public override T Accept<T>(Visitor<T> vis){
+		return vis.VisitExprUnary(this);
 	}
 	}
 }
