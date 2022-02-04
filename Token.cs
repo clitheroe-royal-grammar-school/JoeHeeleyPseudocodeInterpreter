@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JoePlusPlus
+namespace Interpreter
 {
     public enum TokenType
     {
@@ -28,30 +28,21 @@ namespace JoePlusPlus
         MINUS,
         DIVIDE,
         MULTIPLY,
+        OUTPUT,
+        VAR,
+        INDENT,
     }
     class Token
     {
-        private string value;
-        private TokenType type;
-        private object obj;
+        public string value;
+        public TokenType type;
+        public object obj;
         public Token(string value,TokenType type,object obj)
         {
             this.value = value;
             this.type = type;
             this.obj = obj;
 
-        }
-        public object GetObj()
-        {
-            return obj;
-        }
-        public string GetValue()
-        {
-            return value;
-        }
-        public TokenType GetTokenType()
-        {
-            return type;
         }
         public override string ToString()
         {

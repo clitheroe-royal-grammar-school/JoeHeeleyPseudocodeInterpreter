@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JoePlusPlus
+namespace Interpreter
 {
     class Lexer
     {
@@ -82,7 +82,20 @@ namespace JoePlusPlus
                         pos++;
                         break;
                     case ' ':
-                        SkipWhitespace();
+                        if (pos == 0)
+                        {
+                            int count = SkipWhitespace();
+                            if (count == 3)
+                            {
+                                tokens.Add(new Token(null, TokenType.INDENT, null));
+                            }
+                        }
+                       
+                        if (pos == 3)
+                        {
+                            tokens.Add
+                        }
+                        
                         break;
                     case '(':
                         tokens.Add(new Token("(", TokenType.LBRACK, null));
@@ -118,6 +131,16 @@ namespace JoePlusPlus
                                 tokens.Add(new Token(value, TokenType.NONE, null));
                                 break;
                             }
+                            if(value == "OUTPUT")
+                            {
+                                tokens.Add(new Token(value, TokenType.OUTPUT, null));
+                                break;
+                            }
+                            if (value == "VAR")
+                            {
+                                tokens.Add(new Token(value, TokenType.VAR, null));
+                                break;
+                            }
                             tokens.Add(new Token(value, TokenType.IDENTIFIER, null));
                             break;
                         }
@@ -127,8 +150,14 @@ namespace JoePlusPlus
                 }      
             }       
         }
-        private void SkipWhitespace() {
-            while (text[pos] == ' ') pos++;
+        private int SkipWhitespace() {
+            int count = 0;
+            while (text[pos] == ' ')
+            {
+                pos++;
+                count++;
+            }
+            return count;
         }
         private string Integer() {
             string num = "";

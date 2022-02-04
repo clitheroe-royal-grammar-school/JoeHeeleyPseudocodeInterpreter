@@ -1,7 +1,8 @@
-<program> ::= <statement>*|EOF;
-<statement> ::= <exprStmt>|<outputStmt>;
-<exprStmt> ::= <expression>;
-<outputStmt> ::= "OUTPUT "<statement>;
+<program> ::= <declaration>*EOF;
+<declaration> ::= <variable>|<statement>;
+<variable> ::= "VAR" IDENTIFIER ("=" <expression>)?";";
+<statement> ::= <expression>|<output>;
+<output> := "OUTPUT "<expression>;
 <expression> ::= <literal>|<unary>|<binary>|<brackets>;
 <literal> ::= INTEGER|STRING|BOOL|NONE;
 <brackets> ::= "("<expression>")";
@@ -14,4 +15,4 @@
 <term> ::= <factor>(("-"|"+")<factor>)*;
 <factor> ::= <unary>(("/","*")<unary>)*;
 <unary> ::= ("!"|"-")<unary>|<primary>;
-<primary> ::= INTEGER|STRING|BOOL|NONE|"("expression")";
+<primary> ::= INTEGER|STRING|BOOL|NONE|"("expression")"|IDENTIFIER;

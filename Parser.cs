@@ -4,18 +4,56 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JoePlusPlus
+namespace Interpreter
 {
     class Parser
     {
         public List<Token> tokens;
         private int curr;
-        public Expr result;
         public Parser(List<Token> toks)
         {
             tokens = toks;
             curr = 0;
-            result = Expression();
+        }
+        public List<Stmt> Parse()
+        {
+            List<Stmt> statements = new List<Stmt>();
+            while (curr < tokens.Count)
+            {
+                statements.Add(Declaration());
+            }
+            return statements;
+        }
+        private Stmt Declaration()
+        {
+            if (Match(TokenType.VAR)) return VariableDec();
+            return Statement();
+        }
+        private Stmt VariableDec()
+        {
+            Token name = tokens[curr];
+            curr++;
+            Expr initial = null;
+            if (Match(TokenType.ASSIGN))
+            {
+                initial = Expression();
+            }
+            return new StmtVar(name, initial);
+        }
+        private Stmt Statement()
+        {
+            if (Match(TokenType.OUTPUT)) return OutputStmt();
+            return ExpressionStmt();
+        }
+        private Stmt OutputStmt()
+        {
+            Expr result = Expression();
+            return new StmtOutput(result);
+        }
+        private Stmt ExpressionStmt()
+        {
+            Expr result = Expression();
+            return new StmtExpression(result);
         }
         private Expr Expression()
         {
@@ -82,10 +120,11 @@ namespace JoePlusPlus
         }
         private Expr Primary()
         {
-            if (Match(TokenType.INTEGER)) return new ExprLiteral(tokens[curr - 1].GetObj());
-            if (Match(TokenType.STRING)) return new ExprLiteral(tokens[curr - 1].GetObj());
-            if (Match(TokenType.BOOL)) return new ExprLiteral(tokens[curr - 1].GetObj());
-            if (Match(TokenType.NONE)) return new ExprLiteral(tokens[curr - 1].GetObj());
+            if (Match(TokenType.INTEGER)) return new ExprLiteral(tokens[curr - 1].obj);
+            if (Match(TokenType.STRING)) return new ExprLiteral(tokens[curr - 1].obj);
+            if (Match(TokenType.BOOL)) return new ExprLiteral(tokens[curr - 1].obj);
+            if (Match(TokenType.NONE)) return new ExprLiteral(tokens[curr - 1].obj);
+            if (Match(TokenType.IDENTIFIER)) return new ExprVariable(tokens[curr - 1]);
             if (Match(TokenType.LBRACK))
             {
                 ExprGrouping expr = new ExprGrouping(Expression());
@@ -98,7 +137,7 @@ namespace JoePlusPlus
         {
             foreach(TokenType type in types)
             {
-                if(curr < tokens.Count && tokens[curr].GetTokenType() == type)
+                if(curr < tokens.Count && tokens[curr].type == type)
                 {
                     curr++;
                     return true;
@@ -109,7 +148,7 @@ namespace JoePlusPlus
         }
         private bool Match(TokenType type)
         {
-            if (curr < tokens.Count && tokens[curr].GetTokenType() == type)
+            if (curr < tokens.Count && tokens[curr].type == type)
             {
                 curr++;
                 return true;

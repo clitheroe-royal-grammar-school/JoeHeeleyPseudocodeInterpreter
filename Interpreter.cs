@@ -4,27 +4,34 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JoePlusPlus
+namespace Interpreter
 {
-    class Interpreter : Visitor<object>
+    class Interpreter : Expr.Visitor<object>,Stmt.Visitor<object>
     {
-        public void Interpret(Expr expression)
+        public Memory mem = new Memory();
+        public void Interpret(List<Stmt> statements)
         {
             try
             {
-                object value = Evaluate(expression);
-                Console.WriteLine(value.ToString());
+                foreach(Stmt statement in statements)
+                {
+                    Execute(statement);
+                }
             }
             catch(Exception e)
             {
                 Console.WriteLine(e);
             }
         }
-        public object VisitExprBinary(ExprBinary expr_binary)
+        private void Execute(Stmt stmt)
         {
-            object left = Evaluate(expr_binary.left);
-            object right = Evaluate(expr_binary.right);
-            switch (expr_binary.op.GetTokenType())
+            stmt.Accept(this);
+        }
+        public object VisitExprBinary(ExprBinary exprbinary)
+        {
+            object left = Evaluate(exprbinary.left);
+            object right = Evaluate(exprbinary.right);
+            switch (exprbinary.op.type)
             {
                 case TokenType.MINUS:
                     return (int)left - (int)right;
@@ -58,24 +65,24 @@ namespace JoePlusPlus
             return null;
         }
 
-        public object VisitExprGrouping(ExprGrouping expr_grouping)
+        public object VisitExprGrouping(ExprGrouping exprgrouping)
         {
-            return Evaluate(expr_grouping.expression);
+            return Evaluate(exprgrouping.expression);
         }
 
-        public object VisitExprLiteral(ExprLiteral expr_literal)
+        public object VisitExprLiteral(ExprLiteral exprliteral)
         {
-            return expr_literal.value;
+            return exprliteral.value;
         }
 
-        public object VisitExprUnary(ExprUnary expr_unary)
+        public object VisitExprUnary(ExprUnary exprunary)
         {
-            object right = Evaluate(expr_unary.right);
-            if (expr_unary.op.GetTokenType() == TokenType.MINUS)
+            object right = Evaluate(exprunary.right);
+            if (exprunary.op.type == TokenType.MINUS)
             {
                 return -(int)right;
             }
-            if (expr_unary.op.GetTokenType() == TokenType.NOT)
+            if (exprunary.op.type == TokenType.NOT)
             {
                 return !(bool)right;
             }
@@ -84,6 +91,35 @@ namespace JoePlusPlus
         public object Evaluate(Expr expr)
         {
             return expr.Accept(this);
+        }
+
+        public object VisitStmtExpression(StmtExpression stmt)
+        {
+            Evaluate(stmt.expression);
+            return null;
+        }
+
+        public object VisitStmtOutput(StmtOutput stmt)
+        {
+            object result = Evaluate(stmt.expression);
+            Console.WriteLine(result.ToString());
+            return null;
+        }
+
+        public object VisitStmtVar(StmtVar stmt)
+        {
+            object value = null;
+            if (stmt.initial != null)
+            {
+                value = Evaluate(stmt.initial);
+            }
+            mem.Define(stmt.name.value, value);
+            return null;
+        }
+
+        public object VisitExprVariable(ExprVariable expr)
+        {
+            return mem.Get(expr.name);
         }
     }
 }
