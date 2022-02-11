@@ -8,10 +8,11 @@ namespace Interpreter{
 		public abstract T Accept<T>(Visitor<T> vis);
 		public interface Visitor<T>{
 			T VisitExprBinary(ExprBinary expr);
-			T VisitExprGrouping(ExprGrouping expr);
+			T VisitExprBrackets(ExprBrackets expr);
 			T VisitExprLiteral(ExprLiteral expr);
 			T VisitExprUnary(ExprUnary expr);
 			T VisitExprVariable(ExprVariable expr);
+			T VisitExprAssignment(ExprAssignment expr);
 		}
 	}
 	class ExprBinary:Expr{
@@ -27,13 +28,13 @@ namespace Interpreter{
 			return vis.VisitExprBinary(this);
 		}
 	}
-	class ExprGrouping:Expr{
+	class ExprBrackets:Expr{
 		public Expr expression;
-		public ExprGrouping(Expr expression){
+		public ExprBrackets(Expr expression){
 			this.expression=expression;
 		}
 		public override T Accept<T>(Expr.Visitor<T> vis){
-			return vis.VisitExprGrouping(this);
+			return vis.VisitExprBrackets(this);
 		}
 	}
 	class ExprLiteral:Expr{
@@ -63,6 +64,17 @@ namespace Interpreter{
 		}
 		public override T Accept<T>(Expr.Visitor<T> vis){
 			return vis.VisitExprVariable(this);
+		}
+	}
+	class ExprAssignment:Expr{
+		public Token name;
+		public Expr value;
+		public ExprAssignment(Token name,Expr value){
+			this.name=name;
+			this.value=value;
+		}
+		public override T Accept<T>(Expr.Visitor<T> vis){
+			return vis.VisitExprAssignment(this);
 		}
 	}
 }

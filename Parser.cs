@@ -57,7 +57,22 @@ namespace Interpreter
         }
         private Expr Expression()
         {
+            if (Match(TokenType.IDENTIFIER))
+            {
+                return Assign();
+            }
             return Equality();
+        }
+        private ExprAssignment Assign()
+        {
+            Expr name = Equality();
+            curr++;
+            if(Match(TokenType.ASSIGN)){
+                Expr value = Equality();
+                if()
+                return new ExprAssignment(name,value);
+            }
+            return null;
         }
         private Expr Equality()
         {
@@ -127,7 +142,7 @@ namespace Interpreter
             if (Match(TokenType.IDENTIFIER)) return new ExprVariable(tokens[curr - 1]);
             if (Match(TokenType.LBRACK))
             {
-                ExprGrouping expr = new ExprGrouping(Expression());
+                ExprBrackets expr = new ExprBrackets(Expression());
                 Match(TokenType.RBRACK);
                 return expr;
             }

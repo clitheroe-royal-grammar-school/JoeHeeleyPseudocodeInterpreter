@@ -43,10 +43,11 @@ def automateAST(output_dir,base,types):
 
 print(curr_path)
 automateAST(curr_path,"Expr",{"Binary":"Expr left,Token op,Expr right",
-                            "Grouping":"Expr expression",
+                            "Brackets":"Expr expression",
                             "Literal":"object value",
                             "Unary": "Token op,Expr right",
-                            "Variable":"Token name"})
+                            "Variable":"Token name",
+                            "Assignment":"Token name,Expr value"})
 automateAST(curr_path,"Stmt",{"Expression":"Expr expression",
                               "Output":"Expr expression",
                               "Var":"Token name,Expr initial"})

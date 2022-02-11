@@ -12,18 +12,11 @@ namespace Interpreter
         {
             public string name;
             public object value;
-            public bool constant;
         }
         public Dictionary<string, object> variables = new Dictionary<string, object>();
-        public List<Variable> variabs = new List<Variable>();
-        public void Define(string name, object value,bool constant)
+        public void Define(string name, object value)
         {
             variables.Add(name, value);
-            Variable var;
-            var.name = name;
-            var.value = value;
-            var.constant = constant;
-            variabs.Add(var);
         }
         public object Get(Token name)
         {
@@ -31,7 +24,6 @@ namespace Interpreter
             {
                 return variables[name.value];
             }
-            if(variabs.Co)
             return null;
         }
     }

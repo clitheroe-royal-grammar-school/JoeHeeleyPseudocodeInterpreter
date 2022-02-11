@@ -82,20 +82,11 @@ namespace Interpreter
                         pos++;
                         break;
                     case ' ':
-                        if (pos == 0)
+                        int count = SkipWhitespace();
+                        if (count == 3)
                         {
-                            int count = SkipWhitespace();
-                            if (count == 3)
-                            {
-                                tokens.Add(new Token(null, TokenType.INDENT, null));
-                            }
+                            tokens.Add(new Token(null, TokenType.INDENT, null));
                         }
-                       
-                        if (pos == 3)
-                        {
-                            tokens.Add
-                        }
-                        
                         break;
                     case '(':
                         tokens.Add(new Token("(", TokenType.LBRACK, null));

@@ -65,9 +65,9 @@ namespace Interpreter
             return null;
         }
 
-        public object VisitExprGrouping(ExprGrouping exprgrouping)
+        public object VisitExprBrackets(ExprBrackets exprbrackets)
         {
-            return Evaluate(exprgrouping.expression);
+            return Evaluate(exprbrackets.expression);
         }
 
         public object VisitExprLiteral(ExprLiteral exprliteral)
@@ -120,6 +120,11 @@ namespace Interpreter
         public object VisitExprVariable(ExprVariable expr)
         {
             return mem.Get(expr.name);
+        }
+
+        public object VisitExprAssignment(ExprAssignment expr)
+        {
+            throw new NotImplementedException();
         }
     }
 }
