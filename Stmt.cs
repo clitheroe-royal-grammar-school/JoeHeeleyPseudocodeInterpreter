@@ -10,6 +10,7 @@ namespace Interpreter{
 			T VisitStmtExpression(StmtExpression stmt);
 			T VisitStmtOutput(StmtOutput stmt);
 			T VisitStmtVar(StmtVar stmt);
+			T VisitStmtBlock(StmtBlock stmt);
 		}
 	}
 	class StmtExpression:Stmt{
@@ -39,6 +40,15 @@ namespace Interpreter{
 		}
 		public override T Accept<T>(Stmt.Visitor<T> vis){
 			return vis.VisitStmtVar(this);
+		}
+	}
+	class StmtBlock:Stmt{
+		public List<Stmt> statements;
+		public StmtBlock(List<Stmt> statements){
+			this.statements=statements;
+		}
+		public override T Accept<T>(Stmt.Visitor<T> vis){
+			return vis.VisitStmtBlock(this);
 		}
 	}
 }

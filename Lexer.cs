@@ -17,10 +17,15 @@ namespace Interpreter
         }
         public Lexer(string code)
         {
-            text = code;
-            pos = 0;
+            string[] lines = code.Split('\n');
             tokens = new List<Token>();
-            Lex();
+            foreach(string line in lines)
+            {
+                pos = 0;
+                text = line;
+                Lex();
+                tokens.Add(new Token(null, TokenType.NEWLINE, null));
+            }
         }
         private void Lex()
         {
@@ -82,11 +87,10 @@ namespace Interpreter
                         pos++;
                         break;
                     case ' ':
-                        int count = SkipWhitespace();
-                        if (count == 3)
-                        {
-                            tokens.Add(new Token(null, TokenType.INDENT, null));
-                        }
+                        SkipWhitespace(pos==0);
+                        break;
+                    case '\n':
+                        tokens.Add(new Token(null, TokenType.NEWLINE, null));
                         break;
                     case '(':
                         tokens.Add(new Token("(", TokenType.LBRACK, null));
@@ -141,14 +145,22 @@ namespace Interpreter
                 }      
             }       
         }
-        private int SkipWhitespace() {
+        private void SkipWhitespace(bool start) {
+            string indent = "";
             int count = 0;
-            while (text[pos] == ' ')
+            while (pos<text.Length && text[pos] == ' ')
             {
                 pos++;
+                indent += ' ';
                 count++;
             }
-            return count;
+            if (start)
+            {
+                for(int i = 0; i < count / 3; i++)
+                {
+                    tokens.Add(new Token("   ",TokenType.INDENT, null));
+                }
+            }
         }
         private string Integer() {
             string num = "";

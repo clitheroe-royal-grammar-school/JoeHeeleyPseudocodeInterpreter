@@ -50,4 +50,5 @@ automateAST(curr_path,"Expr",{"Binary":"Expr left,Token op,Expr right",
                             "Assignment":"Token name,Expr value"})
 automateAST(curr_path,"Stmt",{"Expression":"Expr expression",
                               "Output":"Expr expression",
-                              "Var":"Token name,Expr initial"})
+                              "Var":"Token name,Expr initial",
+                              "Block":"List<Stmt> statements"})

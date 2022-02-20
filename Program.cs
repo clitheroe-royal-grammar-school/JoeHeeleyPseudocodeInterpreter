@@ -9,16 +9,32 @@ namespace Interpreter
 {
     class Program
     {
+        public static Interpreter interpreter = new Interpreter();
         static void Main(string[] args)
         {
-            Lexer lexer = new Lexer("");
-            Interpreter interpreter = new Interpreter();
+            Lexer lexer;
             string option =  Console.ReadLine();
             if (option == "F")
             {
+                
                 string path = Console.ReadLine();
+                
                 using (StreamReader sr = new StreamReader(path))
                 {
+                    string code = sr.ReadToEnd();
+                    lexer = new Lexer(code);
+                    foreach (Token tok in lexer.GetTokens())
+                    {
+                        Console.WriteLine(tok);
+                    }
+                    Parser parser = new Parser(lexer.GetTokens());
+                    List<Stmt> stmts = parser.Parse();
+                    foreach (Stmt stmt in stmts)
+                    {
+                        Console.WriteLine(stmt.GetType());
+                    }
+                    interpreter.Interpret(stmts);
+                    /*
                     string line = sr.ReadLine();
                     while (line!=null)
                     {
@@ -28,6 +44,7 @@ namespace Interpreter
                         interpreter.Interpret(stmts);
                         line = sr.ReadLine();
                     }
+                    */
                 }
                 Console.ReadLine();
             }
@@ -37,9 +54,21 @@ namespace Interpreter
                 {
                     Console.Write("j++>");
                     lexer = new Lexer(Console.ReadLine());
+                    foreach (Token tok in lexer.GetTokens())
+                    {
+                        Console.WriteLine(tok);
+                    }
                     Parser parser = new Parser(lexer.GetTokens());
                     List<Stmt> stmts = parser.Parse();
+                    foreach(Stmt stmt in stmts)
+                    {
+                        Console.WriteLine(stmt.GetType());
+                    }
                     interpreter.Interpret(stmts);
+                    foreach(string var in interpreter.mem.variables.Keys)
+                    {
+                        Console.WriteLine(var + ':' + interpreter.mem.variables[var]);
+                    }
                 }
             }
             

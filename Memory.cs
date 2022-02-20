@@ -8,12 +8,16 @@ namespace Interpreter
 {
     class Memory
     {
-        public struct Variable
-        {
-            public string name;
-            public object value;
-        }
+        public Memory parent;
         public Dictionary<string, object> variables = new Dictionary<string, object>();
+        public Memory(Memory parent)
+        {
+            this.parent = parent;
+        }
+        public Memory()
+        {
+            this.parent = null;
+        }
         public void Define(string name, object value)
         {
             variables.Add(name, value);
@@ -24,7 +28,16 @@ namespace Interpreter
             {
                 return variables[name.value];
             }
+            if (parent != null) return parent.Get(name);
             return null;
+        }
+        public void Assign(Token name,object value)
+        {
+            if (variables.ContainsKey(name.value))
+            {
+                variables[name.value] = value;
+            }
+            if (parent != null) parent.Assign(name,value);
         }
     }
 }

@@ -101,6 +101,7 @@ namespace Interpreter
 
         public object VisitStmtOutput(StmtOutput stmt)
         {
+            Console.WriteLine(stmt.expression);
             object result = Evaluate(stmt.expression);
             Console.WriteLine(result.ToString());
             return null;
@@ -124,7 +125,27 @@ namespace Interpreter
 
         public object VisitExprAssignment(ExprAssignment expr)
         {
-            throw new NotImplementedException();
+            object value = Evaluate(expr.value);
+            mem.Assign(expr.name,value);
+            return value;
+        }
+
+        public object VisitStmtBlock(StmtBlock stmt_block)
+        {
+            Memory parent = this.mem;
+            try
+            {
+                this.mem = new Memory(parent);
+                foreach(Stmt stmt in stmt_block.statements)
+                {
+                    Execute(stmt);
+                }      
+            }
+            finally
+            {
+                this.mem = parent;
+            }
+            return null;
         }
     }
 }

@@ -31,6 +31,7 @@ namespace Interpreter
         OUTPUT,
         VAR,
         INDENT,
+        NEWLINE,
     }
     class Token
     {

@@ -21,6 +21,8 @@ namespace Interpreter
             while (curr < tokens.Count)
             {
                 statements.Add(Declaration());
+                //newline
+                curr++;
             }
             return statements;
         }
@@ -43,7 +45,17 @@ namespace Interpreter
         private Stmt Statement()
         {
             if (Match(TokenType.OUTPUT)) return OutputStmt();
+            if (Match(TokenType.INDENT)) return new StmtBlock(Block());
             return ExpressionStmt();
+        }
+        private List<Stmt> Block()
+        {
+            List<Stmt> stmts = new List<Stmt>();
+            while (curr < tokens.Count && tokens[curr].type == TokenType.INDENT)
+            {
+                stmts.Add(Declaration());
+            }
+            return stmts;
         }
         private Stmt OutputStmt()
         {
@@ -57,7 +69,7 @@ namespace Interpreter
         }
         private Expr Expression()
         {
-            if (Match(TokenType.IDENTIFIER))
+            if (curr==0 && Match(TokenType.IDENTIFIER))
             {
                 return Assign();
             }
@@ -65,12 +77,14 @@ namespace Interpreter
         }
         private ExprAssignment Assign()
         {
-            Expr name = Equality();
-            curr++;
-            if(Match(TokenType.ASSIGN)){
-                Expr value = Equality();
-                if()
-                return new ExprAssignment(name,value);
+            Token variable = tokens[curr - 1];
+            if (Program.interpreter.mem.variables.ContainsKey(variable.value.ToString()))
+            {
+                if (Match(TokenType.ASSIGN))
+                {
+                    Expr value = Equality();
+                    return new ExprAssignment(variable, value);
+                }
             }
             return null;
         }
